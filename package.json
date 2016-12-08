@@ -8,6 +8,11 @@
     "url": "git+https://github.com/parkyngj/24.git"
   },
   "author": "spark",
+  "dependencies": {
+    "express": "4.x",
+    "express-handlebars": "1.1.x",
+    "socket.io": "1.1.x"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/parkyngj/24/issues"
