@@ -1,0 +1,16 @@
+{
+  "name": "24",
+  "version": "0.0.1",
+  "description": "arithmetical card game of 24",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parkyngj/24.git"
+  },
+  "author": "spark",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/parkyngj/24/issues"
+  },
+  "homepage": "https://github.com/parkyngj/24#readme"
+}
