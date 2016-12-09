@@ -4,6 +4,10 @@ For rules and details, see [Wikipedia article on 24](https://en.wikipedia.org/wi
 
 Note that players will not be offered unsolvable combinations of numbers from 1-13.
 
+# Usage
+
+under construction
+
 # Purposes of this project
 
 * Mix it up and learn a different framework than Ruby + Sinatra/Rails.
