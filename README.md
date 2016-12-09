@@ -8,3 +8,4 @@ Note that players will not be offered unsolvable combinations of numbers from 1-
 
 * Mix it up and learn a different framework than Ruby + Sinatra/Rails.
 * Learn more Javascript.
+* Learn non-relational database, and make comparisons/contrasts and advantages/disadvantages.
