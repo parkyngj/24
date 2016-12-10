@@ -1,5 +1,3 @@
-var mongoose = require('mongoose');
-
 var express = require('express');
 var exphbs = require('express-handlebars');
 var app = express();
@@ -10,6 +8,8 @@ var hbs = exphbs.create({
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 // var util = require('./util.js')
+
+var mongoose = require('mongoose');
 
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
