@@ -9,6 +9,18 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 // var util = require('./util.js')
 
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/solvablehands');
+
+var db = mongoose.connection;
+
+db.on('error', console.error.bind(console, "Error: Could not connect to MongoDB. Did you forget to run `mongod`?"))
+db.once("open", function(callback){
+  console.log("Connection to MongoDB succeeded.");
+});
+
+var Hand = require('./models/hand');
+
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 
