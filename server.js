@@ -21,18 +21,38 @@ db.once("open", function(callback){
   console.log("Connection to MongoDB succeeded.");
 });
 
-var Hand = require('./models/hand');
+// create a schema for hand
+var handSchema = new mongoose.Schema({
+    cards: String,
+    solution: String
+});
 
-var stream = fs.createReadStream('/static/etc/hands.csv')
+// create model using hand schema defined above
+var Hand = mongoose.model('Hand', handSchema);
+
+// make this available to our users in our Node applications
+module.exports = Hand;
+
+var stream = fs.createReadStream('static/etc/hands.csv')
 
 csv.fromStream(stream, {headers:true})
   .on('data', function(data){
-    add
+    addHand(data);
   })
+  .on('end', function(){
+    "done importing"
+  });
 
 function addHand(data){
+  console.log(data);
   var hand = new Hand(data);
-}
+  console.log(hand);
+  hand.save(function(error){
+    if (error){
+      console.log(error);
+    };
+  });
+};
 
 
 app.engine('hbs', hbs.engine);
