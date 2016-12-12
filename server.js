@@ -10,7 +10,7 @@ var io = require('socket.io')(http);
 // var util = require('./util.js')
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/solvablehands');
+mongoose.connect('mongodb://localhost:27017/hands');
 
 var db = mongoose.connection;
 
@@ -20,6 +20,8 @@ db.once("open", function(callback){
 });
 
 var Hand = require('./models/hand');
+
+
 
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
