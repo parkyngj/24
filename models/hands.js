@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 
 // create a schema for hand
 var handSchema = new mongoose.Schema({
-    cards: String
+    cards: String,
+    solution: String
 });
 
 // create model using hand schema defined above
