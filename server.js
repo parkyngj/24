@@ -23,7 +23,11 @@ db.once("open", function(callback){
 
 // create a schema for hand
 var handSchema = new mongoose.Schema({
-    cards: String,
+    cards: {
+      type: String,
+      unique: true,
+      index: true
+    },
     solution: String
 });
 
