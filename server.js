@@ -1,5 +1,20 @@
+// Express import
 var express = require('express');
+
+// Handlebars for express
 var exphbs = require('express-handlebars');
+
+// Mongoose import
+var mongoose = require('mongoose');
+
+// Mongoose connection to MongoDB
+mongoose.connect('mongodb://sally')
+
+// 
+require('dotenv').config();
+
+/////////////////////////
+
 var app = express();
 var hbs = exphbs.create({
   extname: '.hbs'
@@ -11,7 +26,6 @@ var io = require('socket.io')(http);
 
 var csv = require('fast-csv')
 var fs = require('fs');
-var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/hands');
 
 var db = mongoose.connection;
