@@ -35,6 +35,9 @@ var handSchema = new Schema({
 // Mongoose Model definition
 var Hand = mongoose.model('hands', handSchema);
 
+// Mongoose random document picker import
+var random = require('mongoose-simple-random');
+
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'mlab connection error:'));
@@ -51,17 +54,21 @@ app.get('/', function(req, res){
   //   [ { $sample: {size: 1} } ]
   // );
   // console.log(randomHand);
-  var randomHand
+
+  var randomHand = "jeff"
 
   Hand.count().exec(function(err, count){
     var randomIndex = Math.floor(Math.random() * count);
 
     Hand.findOne().skip(randomIndex).exec(
       function(err, result){
+        console.log("This is randomHand before trying to modify it", randomHand);
+        console.log("This is the result", result);
         randomHand = result;
+        console.log("This is randomHand after trying to modify it", randomHand);
       }
     )
-  })
+  });
 
-  console.log(randomHand);
+  console.log("This is randomHand outside of the function call", randomHand);
 })
