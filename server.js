@@ -1,32 +1,46 @@
 // Express import
 var express = require('express');
+var app = express();
 
 // Handlebars for express
 var exphbs = require('express-handlebars');
+
+// Use Handlebars are default Express template engine
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+// Tell Node to serve resouces in static
+app.use(express.static('static'));
+
+// Require and configure dotenv to load environment variables
+require('dotenv').config();
 
 // Mongoose import
 var mongoose = require('mongoose');
 
 // Mongoose connection to MongoDB
-mongoose.connect('mongodb://sally')
-
-// 
-require('dotenv').config();
-
-/////////////////////////
-
-var app = express();
-var hbs = exphbs.create({
-  extname: '.hbs'
+db = mongoose.connect('mongodb://sally:' + process.env.MLAB_DB_PASSWORD + ":41358/" + process.env.MLAB_DB_NAME, function(err){
+  if(err){
+    console.log(err);
+  }
 });
 
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-// var util = require('./util.js')
+// Mongoose Schema definition
+var Schema = mongoose.Schema;
+var handSchema = new Schema({
+  cards: {
+  type: String,
+  unique: true,
+  index: true
+  },
+  solution: String
+});
+
+// Mongoose Model definition
+var Hand = mongoose.model('hands', handSchema);
 
 var csv = require('fast-csv')
 var fs = require('fs');
-mongoose.connect('mongodb://localhost:27017/hands');
 
 var db = mongoose.connection;
 
@@ -35,18 +49,6 @@ db.once("open", function(callback){
   console.log("Connection to MongoDB succeeded.");
 });
 
-// create a schema for hand
-var handSchema = new mongoose.Schema({
-    cards: {
-      type: String,
-      unique: true,
-      index: true
-    },
-    solution: String
-});
-
-// create model using hand schema defined above
-var Hand = mongoose.model('Hand', handSchema);
 
 // make this available to our users in our Node applications
 module.exports = Hand;
@@ -71,16 +73,3 @@ function addHand(data){
     };
   });
 };
-
-
-app.engine('hbs', hbs.engine);
-app.set('view engine', 'hbs');
-
-app.set('port', (process.env.PORT || 3000));
-app.use(express.static('static'));
-
-app.get('/', function(req,res){
-  res.render('game');
-});
-
-http.listen(app.get('port'));
