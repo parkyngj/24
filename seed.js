@@ -1,5 +1,7 @@
+// Require and configure dotenv to load environment variables
 require('dotenv').config();
 
+// Mongoose import
 var mongoose = require('mongoose');
 
 // Mongoose connection to MongoDB
@@ -23,9 +25,11 @@ var handSchema = new Schema({
 // Mongoose Model definition
 var Hand = mongoose.model('hands', handSchema);
 
+// Import fast-csv to convert CSV to JSON for insertion into MongoDB
 var csv = require('fast-csv')
 var fs = require('fs');
 
+// Seed MongoDB with parsed CSV to JSON files for valid hands and potential solutions
 var stream = fs.createReadStream('static/etc/hands.csv')
 
 csv.fromStream(stream, {headers:true})
@@ -37,9 +41,9 @@ csv.fromStream(stream, {headers:true})
   });
 
 function addHand(data){
-  // console.log(data);
+  console.log(data);
   var hand = new Hand(data);
-  // console.log(hand);
+  console.log(hand);
   hand.save(function(error){
     if (error){
       console.log(error);
