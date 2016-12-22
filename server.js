@@ -19,11 +19,7 @@ require('dotenv').config();
 var mongoose = require('mongoose');
 
 // Mongoose connection to MongoDB
-db = mongoose.connect('mongodb://sally:' + process.env.MLAB_DB_PASSWORD + '@ds141358.mlab.com:41358/' + process.env.MLAB_DB_NAME, function(err){
-  if(err){
-    console.log(err);
-  }
-});
+mongoose.connect('mongodb://sally:' + process.env.MLAB_DB_PASSWORD + '@ds141358.mlab.com:41358/' + process.env.MLAB_DB_NAME);
 
 // Mongoose Schema definition
 var Schema = mongoose.Schema;
@@ -39,37 +35,33 @@ var handSchema = new Schema({
 // Mongoose Model definition
 var Hand = mongoose.model('hands', handSchema);
 
-var csv = require('fast-csv')
-var fs = require('fs');
-
 var db = mongoose.connection;
 
-db.on('error', console.error.bind(console, "Error: Could not connect to MongoDB. Did you forget to run `mongod`?"))
-db.once("open", function(callback){
-  console.log("Connection to MongoDB succeeded.");
+db.on('error', console.error.bind(console, 'mlab connection error:'));
+db.once('open', function(){
+  console.log('connected to mlab database for valid hands');
 });
 
+app.listen(3000, function(){
+  console.log('listening on 3000');
+});
 
-// make this available to our users in our Node applications
-module.exports = Hand;
+app.get('/', function(req, res){
+  // var randomHand = db.collection('hands').aggregate(
+  //   [ { $sample: {size: 1} } ]
+  // );
+  // console.log(randomHand);
+  var randomHand
 
-var stream = fs.createReadStream('static/etc/hands.csv')
+  Hand.count().exec(function(err, count){
+    var randomIndex = Math.floor(Math.random() * count);
 
-csv.fromStream(stream, {headers:true})
-  .on('data', function(data){
-    addHand(data);
+    Hand.findOne().skip(randomIndex).exec(
+      function(err, result){
+        randomHand = result;
+      }
+    )
   })
-  .on('end', function(){
-    "done importing"
-  });
 
-function addHand(data){
-  console.log(data);
-  var hand = new Hand(data);
-  console.log(hand);
-  hand.save(function(error){
-    if (error){
-      console.log(error);
-    };
-  });
-};
+  console.log(randomHand);
+})

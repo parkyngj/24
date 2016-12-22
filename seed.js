@@ -5,7 +5,7 @@ require('dotenv').config();
 var mongoose = require('mongoose');
 
 // Mongoose connection to MongoDB
-db = mongoose.connect('mongodb://sally:' + process.env.MLAB_DB_PASSWORD + '@ds141358.mlab.com:41358/' + process.env.MLAB_DB_NAME, function(err){
+var db = mongoose.connect('mongodb://sally:' + process.env.MLAB_DB_PASSWORD + '@ds141358.mlab.com:41358/' + process.env.MLAB_DB_NAME, function(err){
   if(err){
     console.log(err);
   }
