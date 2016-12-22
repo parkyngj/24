@@ -1,72 +1,74 @@
+// Express import
 var express = require('express');
-var exphbs = require('express-handlebars');
 var app = express();
-var hbs = exphbs.create({
-  extname: '.hbs'
+
+// Handlebars for express
+var exphbs = require('express-handlebars');
+
+// Use Handlebars are default Express template engine
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+// Tell Node to serve resouces in static
+app.use(express.static('static'));
+
+// Require and configure dotenv to load environment variables
+require('dotenv').config();
+
+// Mongoose import
+var mongoose = require('mongoose');
+
+// Mongoose connection to MongoDB
+mongoose.connect('mongodb://sally:' + process.env.MLAB_DB_PASSWORD + '@ds141358.mlab.com:41358/' + process.env.MLAB_DB_NAME);
+
+// Mongoose Schema definition
+var Schema = mongoose.Schema;
+var handSchema = new Schema({
+  cards: {
+  type: String,
+  unique: true,
+  index: true
+  },
+  solution: String
 });
 
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-// var util = require('./util.js')
+// Mongoose Model definition
+var Hand = mongoose.model('hands', handSchema);
 
-var csv = require('fast-csv')
-var fs = require('fs');
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/hands');
+// Mongoose random document picker import
+var random = require('mongoose-simple-random');
 
 var db = mongoose.connection;
 
-db.on('error', console.error.bind(console, "Error: Could not connect to MongoDB. Did you forget to run `mongod`?"))
-db.once("open", function(callback){
-  console.log("Connection to MongoDB succeeded.");
+db.on('error', console.error.bind(console, 'mlab connection error:'));
+db.once('open', function(){
+  console.log('connected to mlab database for valid hands');
 });
 
-// create a schema for hand
-var handSchema = new mongoose.Schema({
-    cards: {
-      type: String,
-      unique: true,
-      index: true
-    },
-    solution: String
+app.listen(3000, function(){
+  console.log('listening on 3000');
 });
 
-// create model using hand schema defined above
-var Hand = mongoose.model('Hand', handSchema);
+app.get('/', function(req, res){
+  // var randomHand = db.collection('hands').aggregate(
+  //   [ { $sample: {size: 1} } ]
+  // );
+  // console.log(randomHand);
 
-// make this available to our users in our Node applications
-module.exports = Hand;
+  var randomHand = "jeff"
 
-var stream = fs.createReadStream('static/etc/hands.csv')
+  Hand.count().exec(function(err, count){
+    var randomIndex = Math.floor(Math.random() * count);
 
-csv.fromStream(stream, {headers:true})
-  .on('data', function(data){
-    addHand(data);
-  })
-  .on('end', function(){
-    "done importing"
+    Hand.findOne().skip(randomIndex).exec(
+      function(err, result){
+        console.log("This is randomHand before trying to modify it", randomHand);
+        console.log("This is the result", result);
+        randomHand = result;
+        console.log("This is randomHand after trying to modify it", randomHand);
+      }
+    )
   });
 
-function addHand(data){
-  console.log(data);
-  var hand = new Hand(data);
-  console.log(hand);
-  hand.save(function(error){
-    if (error){
-      console.log(error);
-    };
-  });
-};
-
-
-app.engine('hbs', hbs.engine);
-app.set('view engine', 'hbs');
-
-app.set('port', (process.env.PORT || 3000));
-app.use(express.static('static'));
-
-app.get('/', function(req,res){
-  res.render('game');
-});
-
-http.listen(app.get('port'));
+  console.log("This is randomHand outside of the function call", randomHand);
+})
